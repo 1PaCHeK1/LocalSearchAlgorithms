@@ -29,21 +29,22 @@ class Sopt(abc.ABC):
     verify : float
     length : int
 
-    def __init__(self, data, length, verify=None):
+    def __init__(self, data, length, base_sol=None, verify=None):
         self.data = data
         self.length = length
         self.verify = verify or -1
+        self.base_plan = base_sol or self.create_plan()
 
     @abc.abstractmethod
     def func(self, plan:Solution):
         pass
-    
+
     @abc.abstractmethod
     def create_plan(self) -> Solution:
         pass
 
     def fitness(self):
-        base_plan = self.create_plan()
+        base_plan = self.base_plan
         while True:
             new_plan = base_plan
             for sol in self.stuffing(new_plan.plan, self.length):
