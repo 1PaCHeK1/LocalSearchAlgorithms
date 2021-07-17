@@ -1,4 +1,4 @@
-from ants.core import AntAlgorithm
+from LocalSearchAlgorithms.ants.core import AntAlgorithm
 
 class AntTravelingSalesman(AntAlgorithm):
     def func(self, ant) -> float:

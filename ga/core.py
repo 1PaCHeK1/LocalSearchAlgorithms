@@ -66,6 +66,10 @@ class GA(abc.ABC):
     def creategen(self) -> Gen:
         pass
 
+    @abc.abstractmethod
+    def filter(self) -> None:
+        pass
+    
     def fitness(self) -> Gen:
         self.population = [ self.creategen() for _ in range(self.maxpopulation//4) ]
         self.population.sort(key=lambda item : item.func, reverse=True)
@@ -79,9 +83,7 @@ class GA(abc.ABC):
 
             [ self.mutation(gen) for gen in self.population ]
             [ gen.nextage() for gen in self.population ]
-            self.population = [ gen for gen in self.population 
-                if len(set(range(self.__n)) - set(gen)) == 0 ]
-            self.population = self.population[len(self.population)//3:]
+            self.filter()
             self.population.sort(key=lambda item : item.func, reverse=True)
 
             if self.population[-1] == best_solution:
@@ -91,8 +93,8 @@ class GA(abc.ABC):
                 best_solution = self.population[-1]
 
         return self.population[-1]
-
-    def getindex(self, value) -> int:
+    
+    def getindex(self, value:int) -> int:
         if value < self.options.get('first_p', 5):
             return random.randint(0, int(len(self.population)*0.1))
         elif value < self.options.get('second_p', 35):

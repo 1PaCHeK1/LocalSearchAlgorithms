@@ -1,3 +1,3 @@
-import ga
-import ants
-import SOpt
+import LocalSearchAlgorithms.ga
+import LocalSearchAlgorithms.ants
+import LocalSearchAlgorithms.SOpt

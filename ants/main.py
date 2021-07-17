@@ -1,4 +1,4 @@
-from ants.core import Ant, AntAlgorithm, Solution
+from LocalSearchAlgorithms.ants.core import Ant, AntAlgorithm, Solution
 from typing import Union
 
 class AntFlowShop(AntAlgorithm):

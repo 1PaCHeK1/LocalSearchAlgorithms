@@ -23,17 +23,19 @@ class Solution:
     def __lt__(self, other):
         return self.func < other.func
 
+
+
 class Sopt(abc.ABC):
     data : list
     solution : Solution
     verify : float
     length : int
 
-    def __init__(self, data, length, base_sol=None, verify=None):
+    def __init__(self, data, length, base_plan=None, verify=None):
         self.data = data
         self.length = length
-        self.verify = verify or -1
-        self.base_plan = base_sol or self.create_plan()
+        self.verify = verify
+        self.base_plan = base_plan or self.create_plan()
 
     @abc.abstractmethod
     def func(self, plan:Solution):
@@ -45,16 +47,18 @@ class Sopt(abc.ABC):
 
     def fitness(self):
         base_plan = self.base_plan
+        new_plan = base_plan
+        _key = lambda item : item.func
+
         while True:
-            new_plan = base_plan
-            for sol in self.stuffing(new_plan.plan, self.length):
-                if sol < new_plan:
-                    new_plan = sol
-            if new_plan == base_plan or abs(new_plan.func - base_plan.func) < self.verify:
+            new_plan = min(base_plan, min(self.stuffing(new_plan.plan, self.length), key=_key), key=_key)
+
+            if new_plan == base_plan or (self.verify and new_plan.func - base_plan.func < self.verify):
                 break
             else:
                 base_plan = new_plan
-        return base_plan
+
+        return new_plan
 
     def stuffing(self, base_plan:list[int], s, start=0):
         if s == 0:
@@ -63,8 +67,7 @@ class Sopt(abc.ABC):
         for i in range(start, n-1):
             for j in range(i + 1, n):
                 tmp = base_plan.copy()
-                # tmp[i], tmp[j] = tmp[j], tmp[i]
-                tmp.insert(i, tmp.pop(j))
+                tmp[j] = 0 if tmp[j] else 1
                 yield Solution(tmp, self.func(tmp))
                 for plan in self.stuffing(tmp, s - 1, i+1):
                     yield Solution(plan, self.func(plan))

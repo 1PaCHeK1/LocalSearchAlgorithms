@@ -1,5 +1,5 @@
 import random
-from SOpt.core import Solution, Sopt
+from LocalSearchAlgorithms.SOpt.core import Solution, Sopt
 
 class SoptFloShop(Sopt):
     def func(self, plan:Solution):

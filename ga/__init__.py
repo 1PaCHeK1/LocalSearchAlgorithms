@@ -1,2 +1,2 @@
-from ga.core import GA, Gen
-from ga.main import GAFlowShop
+from LocalSearchAlgorithms.ga.core import GA, Gen
+from LocalSearchAlgorithms.ga.main import GAFlowShop

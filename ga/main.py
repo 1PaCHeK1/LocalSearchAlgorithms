@@ -1,7 +1,7 @@
 import random
 from bisect import bisect
 from typing import Iterable
-from ga.core import Gen, GA
+from LocalSearchAlgorithms.ga.core import Gen, GA
 
 
 class GAFlowShop(GA):
@@ -38,6 +38,11 @@ class GAFlowShop(GA):
         gen_code = list(range(len(self.data[0]))) 
         random.shuffle(gen_code)
         return Gen(gen_code, self.func(gen_code))
+
+    def filter(self) -> None:
+        self.population = [ gen for gen in self.population 
+            if len(set(range(self.__n)) - set(gen)) == 0 ]
+        self.population = self.population[len(self.population)//3:]
 
     def __cmax(self, gen, i, r) -> float: 
         if r == 0:

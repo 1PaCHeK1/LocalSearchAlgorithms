@@ -1,2 +1,2 @@
-from SOpt.core import Solution, Sopt
-from SOpt.main import SoptFloShop
+from LocalSearchAlgorithms.SOpt.core import Solution, Sopt
+from LocalSearchAlgorithms.SOpt.main import SoptFloShop
