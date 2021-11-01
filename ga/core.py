@@ -25,7 +25,7 @@ class Gen:
         return self.chromosomes[key]
 
     def __eq__(self, o: object):
-        return o and all([ o[i] == self[i] for i in range(len(self.chromosomes)) ])
+        return o and abs(self.func - o.func) < 1e-5
 
     def __str__(self):
         return  'gen: ' + ' '.join(map(str, self.chromosomes)) + f' generation: {self.age} fun : {self.func}'
@@ -38,17 +38,17 @@ class GA(abc.ABC):
     share : int
 
     def __init__(self, data, maxpopulation,
-        maxage=None, share=-1, maxiter=10, n=None, options=None, callable=None):
+        maxage=None, share=-1, maxiter=10, n=None, options={}, callable=None):
     
         self.data = data
-        self.currentdata = data
         self.maxpopulation = maxpopulation
         self.maxage = maxage
         self.maxiter = maxiter
         self.share = share if share > 0 else maxpopulation // 5
         self.callable = callable
         self.__n = n or len(data)
-        self.options = options or {}
+        self.options = { 'first_p' : options.get('first_p', 5),
+                         'second_p' : options.get('second_p', 35)}
 
     @abc.abstractmethod
     def crossover(self, leftgen:Gen, rightgen:Gen) -> None:
@@ -71,7 +71,7 @@ class GA(abc.ABC):
         pass
     
     def fitness(self) -> Gen:
-        self.population = [ self.creategen() for _ in range(self.maxpopulation//4) ]
+        self.population = [ self.creategen() for _ in range(self.maxpopulation//2) ]
         self.population.sort(key=lambda item : item.func, reverse=True)
         iteration = 0
         best_solution = None
@@ -95,9 +95,9 @@ class GA(abc.ABC):
         return self.population[-1]
     
     def getindex(self, value:int) -> int:
-        if value < self.options.get('first_p', 5):
+        if value < self.options['first_p']:
             return random.randint(0, int(len(self.population)*0.1))
-        elif value < self.options.get('second_p', 35):
+        elif value < self.options['second_p']:
             return random.randint(int(len(self.population)*0.1), int(len(self.population)*0.5))
         else:
             return random.randint(int(len(self.population)*0.6), len(self.population)-1)
