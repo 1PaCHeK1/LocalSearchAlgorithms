@@ -30,6 +30,9 @@ class Gen:
     def __str__(self):
         return  'gen: ' + ' '.join(map(str, self.chromosomes)) + f' generation: {self.age} fun : {self.func}'
 
+    def copy(self):
+        return Gen(self.chromosomes[:], self.func)
+
 class GA(abc.ABC):
     data : list
     population : list[Gen]
@@ -46,7 +49,7 @@ class GA(abc.ABC):
         self.maxiter = maxiter
         self.share = share if share > 0 else maxpopulation // 5
         self.callable = callable
-        self.__n = n or len(data)
+        self.n = n or len(data)
         self.options = { 'first_p' : options.get('first_p', 5),
                          'second_p' : options.get('second_p', 35)}
 
@@ -83,14 +86,14 @@ class GA(abc.ABC):
 
             [ self.mutation(gen) for gen in self.population ]
             [ gen.nextage() for gen in self.population ]
-            self.filter()
             self.population.sort(key=lambda item : item.func, reverse=True)
+            self.filter()
 
             if self.population[-1] == best_solution:
                 iteration += 1
-            else:
+            elif not best_solution or self.population[-1].func < best_solution.func:
                 iteration = 0
-                best_solution = self.population[-1]
+                best_solution = self.population[-1].copy()
 
         return self.population[-1]
     
