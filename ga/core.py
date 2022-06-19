@@ -46,7 +46,7 @@ class GA(abc.ABC):
         self.maxiter = maxiter
         self.share = share if share > 0 else maxpopulation // 5
         self.callable = callable
-        self.__n = n or len(data)
+        self.n = n or len(data)
         self.options = { 'first_p' : options.get('first_p', 5),
                          'second_p' : options.get('second_p', 35)}
 
